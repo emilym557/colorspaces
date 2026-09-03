@@ -3,9 +3,13 @@ import unittest
 from colorspaces import (
     delta_e_cie76,
     hex_to_rgb,
+    hsl_to_rgb,
+    hsv_to_rgb,
     lab_to_rgb,
     linear_to_srgb,
     rgb_to_hex,
+    rgb_to_hsl,
+    rgb_to_hsv,
     rgb_to_lab,
     rgb_to_xyz,
     srgb_to_linear,
@@ -107,6 +111,77 @@ class LabRoundTrip(unittest.TestCase):
         samples = [(0, 0, 0), (255, 255, 255), (26, 43, 76), (230, 57, 70), (128, 128, 128)]
         for rgb in samples:
             _assert_close_rgb(self, lab_to_rgb(*rgb_to_lab(*rgb)), rgb)
+
+
+class HslKnownValues(unittest.TestCase):
+    def test_black(self):
+        self.assertEqual(rgb_to_hsl(0, 0, 0), (0.0, 0.0, 0.0))
+
+    def test_white(self):
+        self.assertEqual(rgb_to_hsl(255, 255, 255), (0.0, 0.0, 1.0))
+
+    def test_red(self):
+        h, s, l = rgb_to_hsl(255, 0, 0)
+        self.assertAlmostEqual(h, 0.0, places=3)
+        self.assertAlmostEqual(s, 1.0, places=3)
+        self.assertAlmostEqual(l, 0.5, places=3)
+
+    def test_green(self):
+        h, s, l = rgb_to_hsl(0, 255, 0)
+        self.assertAlmostEqual(h, 120.0, places=3)
+        self.assertAlmostEqual(s, 1.0, places=3)
+        self.assertAlmostEqual(l, 0.5, places=3)
+
+    def test_blue(self):
+        h, s, l = rgb_to_hsl(0, 0, 255)
+        self.assertAlmostEqual(h, 240.0, places=3)
+        self.assertAlmostEqual(s, 1.0, places=3)
+        self.assertAlmostEqual(l, 0.5, places=3)
+
+    def test_gray_has_no_hue_or_saturation(self):
+        h, s, l = rgb_to_hsl(128, 128, 128)
+        self.assertEqual(s, 0.0)
+        self.assertAlmostEqual(l, 128 / 255, places=3)
+
+
+class HslRoundTrip(unittest.TestCase):
+    def test_round_trips_for_a_range_of_colors(self):
+        samples = [(0, 0, 0), (255, 255, 255), (26, 43, 76), (230, 57, 70), (128, 128, 128)]
+        for rgb in samples:
+            _assert_close_rgb(self, hsl_to_rgb(*rgb_to_hsl(*rgb)), rgb)
+
+
+class HsvKnownValues(unittest.TestCase):
+    def test_black(self):
+        self.assertEqual(rgb_to_hsv(0, 0, 0), (0.0, 0.0, 0.0))
+
+    def test_white(self):
+        self.assertEqual(rgb_to_hsv(255, 255, 255), (0.0, 0.0, 1.0))
+
+    def test_red(self):
+        h, s, v = rgb_to_hsv(255, 0, 0)
+        self.assertAlmostEqual(h, 0.0, places=3)
+        self.assertAlmostEqual(s, 1.0, places=3)
+        self.assertAlmostEqual(v, 1.0, places=3)
+
+    def test_green(self):
+        h, s, v = rgb_to_hsv(0, 255, 0)
+        self.assertAlmostEqual(h, 120.0, places=3)
+        self.assertAlmostEqual(s, 1.0, places=3)
+        self.assertAlmostEqual(v, 1.0, places=3)
+
+    def test_blue(self):
+        h, s, v = rgb_to_hsv(0, 0, 255)
+        self.assertAlmostEqual(h, 240.0, places=3)
+        self.assertAlmostEqual(s, 1.0, places=3)
+        self.assertAlmostEqual(v, 1.0, places=3)
+
+
+class HsvRoundTrip(unittest.TestCase):
+    def test_round_trips_for_a_range_of_colors(self):
+        samples = [(0, 0, 0), (255, 255, 255), (26, 43, 76), (230, 57, 70), (128, 128, 128)]
+        for rgb in samples:
+            _assert_close_rgb(self, hsv_to_rgb(*rgb_to_hsv(*rgb)), rgb)
 
 
 class DeltaE(unittest.TestCase):

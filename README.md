@@ -68,6 +68,7 @@ back = xyz_to_rgb(*xyz)  # (26, 43, 76), modulo rounding
 
 - `colorspaces/srgb.py` -- hex parsing, sRGB gamma encode/decode, RGB <-> XYZ
 - `colorspaces/lab.py` -- XYZ <-> CIELAB, delta E (CIE76)
+- `colorspaces/hsl.py` -- RGB <-> HSL, RGB <-> HSV
 
 ## Tests
 
@@ -77,10 +78,11 @@ Standard library only, no test runner to install:
 python -m unittest discover
 ```
 
-Covers round-trips through each conversion and the known Lab values for
-the sRGB primaries (red/green/blue/black/white) against a D65 white point.
+Covers round-trips through each conversion, the known Lab values for
+the sRGB primaries (red/green/blue/black/white) against a D65 white
+point, and the known HSL/HSV values for those same primaries.
 
 ## Status
 
-Early. Covers the sRGB / XYZ / Lab pipeline with a D65 white point.
-Not yet covered: HSL/HSV, other white points, CIEDE2000.
+Early. Covers the sRGB / XYZ / Lab pipeline with a D65 white point,
+plus HSL/HSV. Not yet covered: CIEDE2000, other white points.
